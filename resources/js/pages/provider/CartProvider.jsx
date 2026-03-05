@@ -22,7 +22,6 @@ export const CartProvider = ({ children }) => {
                         : [];
                 }
             } catch (e) {
-                // console.error("Error loading cart from localStorage:", e);
                 localStorage.removeItem("cartItems");
             }
         }
@@ -63,7 +62,7 @@ export const CartProvider = ({ children }) => {
                     price: product.sell_price,
                     stock: product.stock,
                     discount: product.discount,
-                    image: product.image,
+                    image:`/storage/${product.image}`,
                     quantity: 1,
                     category: product.category?.name ?? "",
                 }

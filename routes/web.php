@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\{BasketController, PublicController, RatingController, WishlistController, PaymentController, EmailSubscriptionController};
+use App\Http\Controllers\{BasketController, PublicController, RatingController, WishlistController, PaymentController, EmailSubscriptionController, SearchController};
 use App\Http\Controllers\Auth\{ForgotPasswordController, AuthController, GoogleAuthController};
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,6 +22,7 @@ Route::get('/basket', fn() => Inertia::render('basket/index'))->name('basket');
 Route::get('/rating', [RatingController::class, 'index'])->name('rating');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/search/live',[SearchController::class, 'live'])->name('search.live');
 
 Route::post('/subscribe', [EmailSubscriptionController::class, 'store'])->name('subscribe.store');
 Route::get('/subscribe/verify/{token}', [EmailSubscriptionController::class, 'verify'])->name('subscribe.verify');

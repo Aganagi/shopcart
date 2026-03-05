@@ -1,7 +1,7 @@
 import React from 'react'
 import { createInertiaApp } from '@inertiajs/react'
 import { createRoot } from 'react-dom/client'
-import { CartProvider } from './pages/provider/Cartprovider'
+import { CartProvider } from './pages/provider/CartProvider'
 import { Toaster } from 'react-hot-toast'
 
 createInertiaApp({

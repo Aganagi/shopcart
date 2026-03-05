@@ -21,8 +21,8 @@ class Transaction extends Model
         'response_data',
     ];
     protected $casts = [
-        'status' => OrderStatus::class,
-        'payment_method' => PaymentType::class,
+        // 'status' => OrderStatus::class,
+        // 'payment_method' => PaymentType::class,
         'response_data' => 'array',
     ];
 

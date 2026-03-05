@@ -113,15 +113,15 @@ export default function Category({ products, categories, selectedCategory }) {
                                                 {product.discount > 0 ? (
                                                     <div>
                                                         <span className="font-semibold text-[#063c28] dark:text-[#93D991] text-sm">
-                                                            ${(product.sell_price - (product.sell_price * product.discount / 100)).toFixed(2)}
+                                                            ${(Number(product.sell_price) - (Number(product.sell_price) * Number(product.discount) / 100)).toFixed(2)}
                                                         </span>
                                                         <span className="line-through font-normal text-zinc-500 dark:text-gray-500 text-sm">
-                                                            ${product.sell_price.toFixed(2)}
+                                                            ${Number(product.sell_price).toFixed(2)}
                                                         </span>
                                                     </div>
                                                 ) : (
                                                     <span className="font-semibold text-[#063c28] dark:text-[#93D991] text-sm">
-                                                        ${product.sell_price.toFixed(2)}
+                                                        ${Number(product.sell_price).toFixed(2)}
                                                     </span>
                                                 )}
                                             </div>
@@ -159,8 +159,8 @@ export default function Category({ products, categories, selectedCategory }) {
 
                                                         <span className="text-sm font-semibold text-neutral-950 dark:text-gray-100">
                                                             ${(
-                                                                (product.sell_price -
-                                                                    product.sell_price * (product.discount / 100)) *
+                                                                (Number(product.sell_price) -
+                                                                    Number(product.sell_price) * (Number(product.discount) / 100)) *
                                                                 getQuantity(product.id)
                                                             ).toFixed(2)}
                                                         </span>

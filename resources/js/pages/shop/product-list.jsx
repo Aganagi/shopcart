@@ -24,9 +24,9 @@ export default function ProductList({ products }) {
                                 <div className="relative group overflow-hidden bg-[#f6f6f6] dark:bg-[#1a1a1f]">
                                     <Link href={`/product/${product.id}`}>
                                         <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-64 object-contain transition-transform duration-500 bg-shop_light_bg group-hover:scale-105 dark:bg-[#1a1a1f]"
+                                            src={`/storage/${product.image}`}
+                                        alt={product.name}
+                                        className="w-full h-64 object-contain transition-transform duration-500 bg-shop_light_bg group-hover:scale-105 dark:bg-[#1a1a1f]"
                                         />
                                     </Link>
                                     <div className="absolute top-2 right-2">

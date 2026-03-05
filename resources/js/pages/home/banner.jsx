@@ -21,7 +21,7 @@ export default function Banner() {
                 </div>
 
                 <img
-                    src="/images/banner.webp"
+                    src="/storage/images/banner.webp"
                     alt="Banner Image"
                     loading='lazy'
                     className="hidden md:inline-flex w-96"

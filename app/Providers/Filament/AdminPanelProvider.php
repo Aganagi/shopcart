@@ -31,13 +31,14 @@ class AdminPanelProvider extends PanelProvider
                 AuthDesignerPlugin::make()
                     ->login(
                         layout: AuthLayout::Overlay,
-                        media: asset('storage/images/abstract.jpg'),
+                        media: asset('storage/images/unsplash.jpg'),
                         blur: 10
                     )
             )
             ->id('admin')
             ->path('admin')
             ->authGuard('admin')
+            ->favicon(asset('favicon.svg'))
             ->colors([
                 'primary' => Color::Amber,
             ])

@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ProductList from "./product-list";
 import { router, usePage } from "@inertiajs/react";
 import clsx from "clsx";
@@ -14,38 +14,33 @@ const price = [
 
 export default function Sidebar({ categories = [], brands = [], initialCategory = null }) {
     const { products, filters } = usePage().props;
-    const [selectedCategory, setSelectedCategory] = useState(filters?.category || initialCategory || null);
-    const [selectedBrand, setSelectedBrand] = useState(filters?.brand ? Number(filters.brand) : null);
-    const [selectedPrice, setSelectedPrice] = useState(filters?.price || null);
+
+    const selectedCategory = filters?.category ? String(filters.category) : null;
+    const selectedBrand = filters?.brand ? Number(filters.brand) : null;
+    const selectedPrice = filters?.price || null;
+
     const safeProducts = Array.isArray(products?.data) ? products.data : [];
     const safeBrands = Array.isArray(brands) ? brands : [];
     const safeCategories = Array.isArray(categories) ? categories : [];
-
-    useEffect(() => {
-        const query = {};
-        if (selectedCategory) query.category = selectedCategory;
-        if (selectedBrand) query.brand = selectedBrand;
-        if (selectedPrice) query.price = selectedPrice;
-
-        router.get("/shop", query, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true
-        });
-    }, [selectedCategory, selectedBrand, selectedPrice]);
 
     const activeFiltersCount =
         (selectedCategory ? 1 : 0) +
         (selectedBrand ? 1 : 0) +
         (selectedPrice ? 1 : 0);
 
-    useEffect(() => {
-        setSelectedBrand(filters?.brand ? Number(filters.brand) : null);
-    }, [filters?.brand]);
+    const applyFilter = (newFilters) => {
+        const merged = { selectedCategory, selectedBrand, selectedPrice, ...newFilters };
+        const query = {};
+        if (merged.selectedCategory) query.category = merged.selectedCategory;
+        if (merged.selectedBrand) query.brand = merged.selectedBrand;
+        if (merged.selectedPrice) query.price = merged.selectedPrice;
 
-    useEffect(() => {
-        setSelectedCategory(filters?.category || null);
-    }, [filters?.category]);
+        router.get("/shop", query, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true
+        });
+    };
 
     return (
         <div className={clsx('border-t', 'border-neutral-200', 'dark:border-neutral-700')}>
@@ -64,21 +59,21 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                             <div role='radiogroup' className='grid gap-2 mt-2 space-y-1'>
                                 {safeCategories.length > 0 ? (
                                     safeCategories.map((category) => (
-                                        <div key={category.id} onClick={() => setSelectedCategory(category.id)}
+                                        <div key={category.id} onClick={() => applyFilter({ selectedCategory: String(category.id) })}
                                             className='flex items-center space-x-2 hover:cursor-pointer'>
                                             <button type="button" role="radio"
                                                 className={clsx(
                                                     'aspect-square h-4 w-4 border shadow-sm rounded flex items-center justify-center',
-                                                    selectedCategory === category.id
+                                                    selectedCategory === String(category.id)
                                                         ? 'border-[#063c28] dark:border-[#4ade80]'
                                                         : 'border-black dark:border-neutral-400',
                                                     'bg-white dark:bg-neutral-800'
                                                 )}>
-                                                {selectedCategory === category.id && (
+                                                {selectedCategory === String(category.id) && (
                                                     <Check className={clsx('h-3.5 w-3.5', 'text-[#063c28]', 'dark:text-[#4ade80]')} />
                                                 )}
                                             </button>
-                                            <label className={clsx('text-sm', selectedCategory === category.id
+                                            <label className={clsx('text-sm', selectedCategory === String(category.id)
                                                 ? 'text-[#063c28] font-bold dark:text-[#4ade80]'
                                                 : 'text-neutral-900 dark:text-neutral-300')}>
                                                 {category.name}
@@ -90,7 +85,7 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                                 )}
                             </div>
                             {selectedCategory && (
-                                <button onClick={() => setSelectedCategory(null)}
+                                <button onClick={() => applyFilter({ selectedCategory: null })}
                                     className={clsx('text-sm font-medium mt-2 underline', 'text-neutral-900 hover:text-[#063d29]', 'dark:text-neutral-300 dark:hover:text-[#4ade80]')}>
                                     Reset
                                 </button>
@@ -103,21 +98,21 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                             <div role='radiogroup' className='grid gap-2 mt-2 space-y-1'>
                                 {safeBrands.length > 0 ? (
                                     safeBrands.map((brand) => (
-                                        <div key={brand.id} onClick={() => setSelectedBrand(Number(brand.id))}
+                                        <div key={brand.id} onClick={() => applyFilter({ selectedBrand: Number(brand.id) })}
                                             className='flex items-center space-x-2 hover:cursor-pointer'>
                                             <button type="button" role="radio"
                                                 className={clsx(
                                                     'aspect-square h-4 w-4 border shadow-sm rounded flex items-center justify-center',
-                                                    selectedBrand === brand.id
+                                                    selectedBrand === Number(brand.id)
                                                         ? 'border-[#063c28] dark:border-[#4ade80]'
                                                         : 'border-black dark:border-neutral-400',
                                                     'bg-white dark:bg-neutral-800'
                                                 )}>
-                                                {selectedBrand === brand.id && (
+                                                {selectedBrand === Number(brand.id) && (
                                                     <Check className={clsx('h-3.5 w-3.5', 'text-[#063c28]', 'dark:text-[#4ade80]')} />
                                                 )}
                                             </button>
-                                            <label className={clsx('text-sm', selectedBrand === brand.id
+                                            <label className={clsx('text-sm', selectedBrand === Number(brand.id)
                                                 ? 'text-[#063c28] font-bold dark:text-[#4ade80]'
                                                 : 'text-neutral-900 dark:text-neutral-300')}>
                                                 {brand.name}
@@ -129,7 +124,7 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                                 )}
                             </div>
                             {selectedBrand && (
-                                <button onClick={() => setSelectedBrand(null)}
+                                <button onClick={() => applyFilter({ selectedBrand: null })}
                                     className={clsx('text-sm font-medium mt-2 underline', 'text-neutral-900 hover:text-[#063d29]', 'dark:text-neutral-300 dark:hover:text-[#4ade80]')}>
                                     Reset
                                 </button>
@@ -141,7 +136,7 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                             </h2>
                             <div role='radiogroup' className='grid gap-2 mt-2 space-y-1'>
                                 {price.map((p) => (
-                                    <div key={p.value} onClick={() => setSelectedPrice(p.value)}
+                                    <div key={p.value} onClick={() => applyFilter({ selectedPrice: p.value })}
                                         className='flex items-center space-x-2 hover:cursor-pointer'>
                                         <button type="button" role="radio"
                                             className={clsx(
@@ -164,7 +159,7 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                                 ))}
                             </div>
                             {selectedPrice && (
-                                <button onClick={() => setSelectedPrice(null)}
+                                <button onClick={() => applyFilter({ selectedPrice: null })}
                                     className={clsx('text-sm font-medium mt-2 underline', 'text-neutral-900 hover:text-[#063d29]', 'dark:text-neutral-300 dark:hover:text-[#4ade80]')}>
                                     Reset
                                 </button>
@@ -172,16 +167,7 @@ export default function Sidebar({ categories = [], brands = [], initialCategory 
                             {activeFiltersCount >= 2 && (
                                 <div className="mt-2 flex justify-start">
                                     <button
-                                        onClick={() => {
-                                            setSelectedCategory(null);
-                                            setSelectedBrand(null);
-                                            setSelectedPrice(null);
-
-                                            router.get('/shop', {}, {
-                                                replace: true,
-                                                preserveScroll: true,
-                                            });
-                                        }}
+                                        onClick={() => router.get('/shop', {}, { replace: true, preserveScroll: true })}
                                         className={clsx('text-sm font-medium mt-2 underline', 'text-neutral-900 hover:text-[#063d29]', 'dark:text-neutral-300 dark:hover:text-[#4ade80]')}
                                     >
                                         Reset All

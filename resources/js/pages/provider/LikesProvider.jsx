@@ -1,14 +1,21 @@
-import {usePage, router} from "@inertiajs/react";
-import {createContext, useCallback, useContext, useEffect, useState, useRef} from "react";
+import { usePage, router } from "@inertiajs/react";
+import { createContext, useCallback, useContext, useEffect, useState, useRef } from "react";
 
 const LikesContext = createContext(undefined);
 const LS_IDS = "wishlist_ids";
 const LS_PRODUCTS = "wishlist";
 
 if (typeof window !== "undefined" && !window.__wishlistStore) {
+    let savedIds = [];
+    let savedProducts = [];
+    try {
+        savedIds = JSON.parse(localStorage.getItem("wishlist_ids") || "[]");
+        savedProducts = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    } catch { }
+
     window.__wishlistStore = {
-        likedItems: [],
-        guestProducts: [],
+        likedItems: Array.isArray(savedIds) ? savedIds : [],
+        guestProducts: Array.isArray(savedProducts) ? savedProducts : [],
         initialized: false,
         currentUserId: null,
         listeners: new Set()
@@ -17,7 +24,7 @@ if (typeof window !== "undefined" && !window.__wishlistStore) {
 
 const getGlobalStore = () => {
     if (typeof window === "undefined") {
-        return {likedItems: [], guestProducts: [], initialized: false, currentUserId: null, listeners: new Set()};
+        return { likedItems: [], guestProducts: [], initialized: false, currentUserId: null, listeners: new Set() };
     }
     return window.__wishlistStore;
 }
@@ -27,8 +34,8 @@ const notifyListeners = () => {
     store.listeners.forEach(listener => listener());
 };
 
-export const LikesProvider = ({children}) => {
-    const {props} = usePage();
+export const LikesProvider = ({ children }) => {
+    const { props } = usePage();
     const auth = props?.auth;
     const initialLikedIds = props?.initialLikedIds ?? [];
     const store = getGlobalStore();
@@ -94,7 +101,7 @@ export const LikesProvider = ({children}) => {
                 }
 
                 router.post('/wishlist/sync',
-                    {product_ids: guestIds},
+                    { product_ids: guestIds },
                     {
                         preserveState: false,
                         preserveScroll: true,
@@ -135,6 +142,7 @@ export const LikesProvider = ({children}) => {
         }
 
         store.initialized = true;
+        notifyListeners();
     }, [auth?.user?.id, initialLikedIds]);
 
     useEffect(() => {
